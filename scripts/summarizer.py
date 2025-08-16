@@ -1,11 +1,21 @@
 import logging
 import sys
 import os
+import json
 
 # 将项目根目录添加到 Python 路径中
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 if project_root not in sys.path:
     sys.path.insert(0, project_root)
+
+# 显式加载 .env 文件，确保配置在导入其他模块前生效
+from dotenv import load_dotenv
+dotenv_path = os.path.join(project_root, '.env')
+if os.path.exists(dotenv_path):
+    load_dotenv(dotenv_path)
+    logging.info(f"Loaded .env file from: {dotenv_path}")
+else:
+    logging.warning(".env file not found, using environment variables.")
 
 # 从我们新的抽象层导入全局 AI 客户端实例
 from app.core.ai_provider import ai_client
@@ -25,9 +35,10 @@ def summarize_article_with_ai(title: str, content: str):
         logging.warning(f"Content length ({len(content)}) is too long, truncating to {max_length} characters.")
         content = content[:max_length]
 
-    prompt = f"""
-    作为一名顶尖的中文AI技术分析师，你的任务是深入分析以下标题为《{title}》的前沿技术文章。
-    请产出一个结构化的 JSON 对象，其中必须包含 "summary" 和 "skills" 两个键。
+    # System prompt with instructions for the AI
+    system_prompt = """
+    作为一名顶尖的中文AI技术分析师，你的任务是深入分析技术文章并产出一个结构化的 JSON 对象。
+    这个 JSON 对象必须包含 "summary" 和 "skills" 两个键。
 
     1.  **"summary"**: (是什么，有什么用)
         请用简体中文撰写一段150-200字的专业摘要。摘要需清晰地阐述以下两点：
@@ -35,31 +46,35 @@ def summarize_article_with_ai(title: str, content: str):
         - **它解决了什么问题 (Why)**: 精准说明这项新技术旨在解决什么痛点，或带来了什么样的核心价值与作用。
 
     2.  **"skills"**: (能给我们什么帮助)
-        请提炼一个包含3到5个简体中文关键点的 JSON 数组。每个关键点都应是读者通过阅读文章可以获得的、具体的、可行动的帮助或启发，例如：
-        - 一个可以直接应用的编程技巧或命令。
-        - 一个解决特定问题的新思路或新方法。
-        - 一个值得关注的开源工具或技术趋势。
+        请提炼一个包含3到5个简体中文关键点的 JSON 数组。每个关键点都应是读者可以获得的、具体的、可行动的帮助或启发。
 
-    文章内容如下:
+    请严格按照 JSON 格式返回结果，确保所有文本都是简体中文。
+    """
+
+    # User prompt with the actual article content
+    user_prompt = f"""
+    请根据以下文章生成所需的 JSON 对象。
+    标题:《{title}》
+    内容:
     ---
     {content}
     ---
-
-    请严格按照以下 JSON 格式返回结果，确保所有文本都是简体中文:
-    {{
-      "summary": "...",
-      "skills": [
-        "关键点1：可直接应用的技巧或方法",
-        "关键点2：值得关注的新工具或趋势",
-        "关键点3：解决某个特定问题的新思路"
-      ]
-    }}
     """
 
-    try:
-        result = ai_client.generate_structured_output(prompt)
+    # For OpenAI-compatible clients, we'll pass a JSON string representing the message list.
+    # For Gemini, it will be treated as a single string.
+    messages = [
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": user_prompt}
+    ]
+    
+    # We serialize the list to a JSON string to pass it through the generic interface.
+    prompt_payload = json.dumps(messages)
 
-        # 简单的结果校验
+    try:
+        result = ai_client.generate_structured_output(prompt_payload)
+
+        # Simple result validation
         if result and "summary" in result and "skills" in result and isinstance(result["skills"], list):
             return result
         else:

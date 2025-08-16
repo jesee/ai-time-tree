@@ -65,7 +65,7 @@ def fetch_article_content(article_url: str):
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
     }
     try:
-        response = requests.get(article_url, headers=headers, timeout=10)
+        response = requests.get(article_url, headers=headers, timeout=15)
         response.raise_for_status()
     except requests.RequestException as e:
         logging.error(f"抓取文章内容失败: {e}")

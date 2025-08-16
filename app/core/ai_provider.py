@@ -79,13 +79,23 @@ class OpenAIClient(AIProvider):
             raise
 
     def generate_structured_output(self, prompt: str):
+        """
+        The 'prompt' is expected to be a JSON string representing a list of messages.
+        Example: '[{"role": "system", "content": "..."}, {"role": "user", "content": "..."}]'
+        """
+        try:
+            messages = json.loads(prompt)
+        except json.JSONDecodeError:
+            # Fallback for simple string prompts for backward compatibility or other use cases
+            messages = [{"role": "user", "content": prompt}]
+
         try:
             logging.info("Sending request to OpenAI-compatible API...")
             response = self.client.chat.completions.create(
                 model=self.model_id,
-                messages=[{"role": "user", "content": prompt}],
+                messages=messages,
                 response_format={"type": "json_object"},
-                timeout=60
+                timeout=30.0  # Set a 30-second timeout
             )
             logging.info("Received response from OpenAI-compatible API.")
             

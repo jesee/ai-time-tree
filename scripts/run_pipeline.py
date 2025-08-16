@@ -3,19 +3,34 @@ import sys
 import os
 import json
 
+# Configure logging right at the start
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.info("--- Script execution started ---")
+
 # Add project root to Python path
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 if project_root not in sys.path:
     sys.path.insert(0, project_root)
+logging.info("Project root added to path.")
+
+# Explicitly load .env file to ensure configuration is set before imports
+from dotenv import load_dotenv
+dotenv_path = os.path.join(project_root, '.env')
+logging.info("Attempting to load .env file...")
+if os.path.exists(dotenv_path):
+    load_dotenv(dotenv_path)
+    logging.info(f"Loaded .env file from: {dotenv_path}")
+else:
+    logging.warning(".env file not found, using environment variables.")
+logging.info(".env loading process finished.")
 
 # Import our modules
+logging.info("Importing local modules (scraper, summarizer)...")
 from scripts import scraper
 from scripts import summarizer
 from app.crud import article as crud_article
 from app.core.database import SessionLocal
-
-# Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.info("Local modules imported successfully.")
 
 def main_pipeline():
     """
