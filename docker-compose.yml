@@ -16,12 +16,14 @@ services:
     ports:
       - "8000:8000"
       
-    # 卷映射 (Volume)
-    # 这非常重要，它能让容器内的数据持久化到我们的主机上。
-    # 即使容器被删除，我们的 aiview.db 数据库文件也不会丢失。
+    # 卷映射
     volumes:
       - ./data:/app/data
       
+    # 环境变量 (新增)
+    environment:
+      # 设置容器的时区为上海（东八区），与主机保持一致
+      - TZ=Asia/Shanghai
+      
     # 重启策略
-    # unless-stopped: 除非我们手动停止，否则容器总是在退出后自动重启
     restart: unless-stopped
