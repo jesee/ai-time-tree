@@ -13,7 +13,8 @@ from sqlalchemy.orm import sessionmaker
 # 实际上，更稳健的方式是基于 main.py 的位置或使用环境变量
 # 这里我们用一个简单的方式，假设我们的工作目录是项目根目录
 # 在生产环境中，这个路径应该通过配置管理
-DATABASE_URL = "sqlite:///./aiview.db"
+# 在容器内，我们将把数据库文件放在 /app/data/ 目录下
+DATABASE_URL = "sqlite:///./data/aiview.db"
 
 # 创建 SQLAlchemy 引擎
 # connect_args 是 SQLite 特有的配置，允许多个线程共享同一个连接

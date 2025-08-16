@@ -20,7 +20,7 @@ services:
     # 这非常重要，它能让容器内的数据持久化到我们的主机上。
     # 即使容器被删除，我们的 aiview.db 数据库文件也不会丢失。
     volumes:
-      - ./aiview.db:/app/aiview.db
+      - ./data:/app/data
       
     # 重启策略
     # unless-stopped: 除非我们手动停止，否则容器总是在退出后自动重启
