@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Time Tree</title>
+    <link href="/static/style.css?v=1.4" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <header class="header">
+        <h1>🌳 AI Time Tree</h1>
+        <p>追踪最新 AI 进展，回顾技术演进之路</p>
+    </header>
+
+    <main class="timeline-container">
+        <!-- 文章卡片将通过 JS 动态插入到这里 -->
+        <div id="timeline"></div>
+        
+        <!-- 这个元素用于 IntersectionObserver 来检测用户是否滚动到底部 -->
+        <div id="load-trigger"></div>
+
+        <div id="loading-indicator" class="loading">
+            <p>正在加载更多 AI 资讯...</p>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>AI Time Tree</p>
+    </footer>
+
+    <script type="text/javascript" src="/static/script.js?v=1.3"></script>
+</body>
+</html>

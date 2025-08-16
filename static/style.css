@@ -1,0 +1,127 @@
+/* 全局样式 */
+:root {
+    --primary-color: #1a73e8;
+    --border-color: #ddd;
+    --background-color: #f0f2f5;
+    --card-background-color: #ffffff;
+    --text-color: #333;
+    --subtle-text-color: #5f6368;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    margin: 0;
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+/* 头部 */
+.header {
+    background-color: var(--card-background-color);
+    padding: 20px 40px;
+    text-align: center;
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+.header h1 { margin: 0; font-size: 2.5em; color: var(--primary-color); }
+.header p { margin: 5px 0 0; color: var(--subtle-text-color); }
+
+/* 时间轴容器 */
+.timeline-container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+#timeline {
+    position: relative;
+    /* 垂直中心线 */
+    border-left: 3px solid var(--primary-color);
+    padding: 20px 0;
+}
+
+/* 文章卡片 */
+.timeline-card {
+    position: relative;
+    margin-left: 40px;
+    margin-bottom: 40px;
+    padding: 20px;
+    background-color: var(--card-background-color);
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* 时间节点圆圈 */
+.timeline-card::before {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: -51.5px; /* (40px margin + 20px padding-left + 3px border-width) - half of circle width */
+    width: 18px;
+    height: 18px;
+    background-color: var(--primary-color);
+    border: 4px solid var(--card-background-color);
+    border-radius: 50%;
+    z-index: 1;
+}
+
+.card-date {
+    position: absolute;
+    /* 增加 left 的负值，让日期离中心线更远 */
+    left: -150px; 
+    top: 18px;
+    font-weight: bold;
+    color: var(--primary-color);
+    /* 增加宽度以容纳完整的日期 */
+    width: 100px; 
+    text-align: right;
+}
+
+.card-content h2 {
+    margin-top: 0;
+    font-size: 1.5em;
+    color: var(--primary-color);
+}
+
+.card-content p {
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.card-content strong {
+    color: #333;
+}
+
+.card-content ul {
+    padding-left: 20px;
+    margin-bottom: 20px;
+}
+
+.card-content .read-more {
+    display: inline-block;
+    font-weight: bold;
+    color: var(--primary-color);
+    text-decoration: none;
+}
+.card-content .read-more:hover {
+    text-decoration: underline;
+}
+
+/* 加载指示器 */
+.loading {
+    text-align: center;
+    padding: 20px;
+    color: var(--subtle-text-color);
+}
+
+/* 底部 */
+.footer {
+    text-align: center;
+    padding: 20px;
+    color: #888;
+    background-color: #fff;
+    border-top: 1px solid #ddd;
+}

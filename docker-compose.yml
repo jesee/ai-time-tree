@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  web:
+    # 服务名称
+    container_name: ai_time_tree
+    
+    # 构建指令
+    build:
+      # 使用当前目录下的 Dockerfile
+      context: .
+      dockerfile: Dockerfile
+    
+    # 端口映射
+    # 将我们主机的 8000 端口，映射到容器的 8000 端口
+    ports:
+      - "8000:8000"
+      
+    # 卷映射 (Volume)
+    # 这非常重要，它能让容器内的数据持久化到我们的主机上。
+    # 即使容器被删除，我们的 aiview.db 数据库文件也不会丢失。
+    volumes:
+      - ./aiview.db:/app/aiview.db
+      
+    # 重启策略
+    # unless-stopped: 除非我们手动停止，否则容器总是在退出后自动重启
+    restart: unless-stopped
